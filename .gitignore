@@ -10,3 +10,4 @@ tb/mnist3/checkpoint
 *.index
 *.meta
 *.NIKODEMOSPC
+*.pyc

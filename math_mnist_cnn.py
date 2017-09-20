@@ -147,10 +147,10 @@ class Model:
             self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
             tf.summary.scalar("accuracy", self.accuracy)
             
-    # Summary
+    # Summary for tensorboard
     def merged_all(self):
         self.merged = tf.summary.merge_all()
-
+    
     def predict(self, x_test, keep_prop=1.0):
         return self.sess.run(self.logits, feed_dict={self.X: x_test, self.keep_prob: keep_prop})
 
