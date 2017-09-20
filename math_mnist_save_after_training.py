@@ -41,9 +41,6 @@ sess = tf.Session()
 m1 = Model(sess, "m1")
 sess.close()
 
-# Summary
-summary = tf.summary.merge_all()
-
 sess.run(tf.global_variables_initializer())
 
 # Create summary writer
@@ -76,9 +73,10 @@ for epoch in range(start_from, training_epochs):
 
     for i in range(total_batch):
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-        c, _ = m1.train(batch_xs, batch_ys)
+        summary, c, _ = m1.train(batch_xs, batch_ys)
         avg_cost += c / total_batch
-    
+        writer.add_summary(summary, i)
+        
     now = time.localtime()
     s = "%04d-%02d-%02d %02d:%02d:%02d" % (now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec)
     print(
@@ -92,12 +90,7 @@ for epoch in range(start_from, training_epochs):
     sess.run(last_epoch.assign(epoch + 1))
     if not os.path.exists(CHECK_POINT_DIR):
         os.makedirs(CHECK_POINT_DIR)
-    print(CHECK_POINT_DIR, i)
-    
-#    try:
     saver.save(sess, CHECK_POINT_DIR + "\\model", global_step=i)
-#    except:
-#        print("Error")
         
 print('Learning Finished!')
 
