@@ -2,3 +2,11 @@
 outputs/test/test.pickle
 outputs/train/train.pickle
 outputs/validation/validation.pickle
+__pycache__/math_mnist_cnn.cpython-36.pyc
+tb/mnist3/events.out.tfevents.1505887366.NIKODEMOSPC
+__pycache__/math_mnist.cpython-36.pyc
+tb/mnist3/checkpoint
+*.data-00000-of-00001
+*.index
+*.meta
+*.NIKODEMOSPC
