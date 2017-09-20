@@ -22,7 +22,7 @@ mnist = math_mnist.read_data_sets()
 
 # hyper parameters
 learning_rate = 0.001
-training_epochs = 1
+training_epochs = 15
 batch_size = 100
 
 # image, label parameters

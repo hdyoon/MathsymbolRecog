@@ -36,6 +36,7 @@ class Model:
         self.learning_rate = learning_rate
         
         self._build_net()
+        self.merged_all()
             
     def _build_net(self):
         with tf.variable_scope(self.name):
@@ -145,6 +146,10 @@ class Model:
         with tf.variable_scope("accuracy"):
             self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
             tf.summary.scalar("accuracy", self.accuracy)
+            
+    # Summary
+    def merged_all(self):
+        self.merged = tf.summary.merge_all()
 
     def predict(self, x_test, keep_prop=1.0):
         return self.sess.run(self.logits, feed_dict={self.X: x_test, self.keep_prob: keep_prop})
@@ -153,7 +158,7 @@ class Model:
         return self.sess.run(self.accuracy, feed_dict={self.X: x_test, self.Y: y_test, self.keep_prob: keep_prop})
 
     def train(self, x_data, y_data, keep_prop=0.7):
-        return self.sess.run([self.cost, self.optimizer], feed_dict={
+        return self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={
             self.X: x_data, self.Y: y_data, self.keep_prob: keep_prop})
     
 if __name__ == "__main__":
