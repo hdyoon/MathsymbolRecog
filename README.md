@@ -9,4 +9,5 @@
 <Program Desc.>
 1. math_mnist_save_after_trainig.py
     - trainning app.
-2. 
+    
+<<scheduled to add contents.....>>
