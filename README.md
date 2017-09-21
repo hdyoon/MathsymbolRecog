@@ -9,7 +9,7 @@ Python version we use is 3.6.1
 2. Extract 50 * 50 pixel images using CROHME_extractor
    Usage: python extract.py 50
     
-<Program Desc.>
+<Script Desc.>
 1. math_mnist_save_after_trainig.py
     - trainning app.
     

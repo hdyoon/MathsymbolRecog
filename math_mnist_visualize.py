@@ -7,13 +7,12 @@
 #"""
 from math_application import Application
 from math_mnist_cnn import Model
-#from math_mnist_cnn_modulation_01 import Model
 
 import tensorflow as tf
 
 tf.set_random_seed(777)  # reproducibility
 
-CHECK_POINT_DIR = TB_SUMMARY_DIR = './tb/mnist3'
+CHECK_POINT_DIR = TB_SUMMARY_DIR = '.\\tb\\mnist2'
 
 tf.reset_default_graph()
 

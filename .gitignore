@@ -11,3 +11,4 @@ tb/mnist3/checkpoint
 *.meta
 *.NIKODEMOSPC
 *.pyc
+tb/mnist2/checkpoint

@@ -11,8 +11,6 @@ import os
 import time
 
 from math_mnist_cnn import Model
-#from math_mnist_cnn_modulation import Model
-#from math_mnist_cnn_modulation_01 import Model
 # import matplotlib.pyplot as plt
 
 tf.set_random_seed(777)  # reproducibility
@@ -22,7 +20,7 @@ mnist = math_mnist.read_data_sets()
 
 # hyper parameters
 learning_rate = 0.001
-training_epochs = 15
+training_epochs = 100
 batch_size = 100
 
 # image, label parameters
@@ -30,7 +28,7 @@ image_size = 50     # one side pixel size of the square
 image_square = image_size * image_size
 label_size = 101    # number of labels(categories)
 
-CHECK_POINT_DIR = TB_SUMMARY_DIR = '.\\tb\\mnist3'
+CHECK_POINT_DIR = TB_SUMMARY_DIR = '.\\tb\\mnist2'
 
 tf.reset_default_graph()
 
@@ -76,6 +74,7 @@ for epoch in range(start_from, training_epochs):
         summary, c, _ = m1.train(batch_xs, batch_ys)
         avg_cost += c / total_batch
         writer.add_summary(summary, i)
+#        print("epoch: ",epoch," i: ",i)
         
     now = time.localtime()
     s = "%04d-%02d-%02d %02d:%02d:%02d" % (now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec)
@@ -84,14 +83,19 @@ for epoch in range(start_from, training_epochs):
             'cost =', '{:.9f}'.format(avg_cost),
             'time =', s
     )
-    if epoch % 2 == 0:
-        print("Learning Rate : ", m1.get_accuracy(mnist.test.images, mnist.test.labels))
+    print("Learning Rate : ", m1.get_accuracy(mnist.test.images, mnist.test.labels))
+        
     print("Saving network...")
+    
     sess.run(last_epoch.assign(epoch + 1))
+    
     if not os.path.exists(CHECK_POINT_DIR):
         os.makedirs(CHECK_POINT_DIR)
+    
+    #Fix Unicode Error
+    CHECK_POINT_DIR = CHECK_POINT_DIR.encode('utf-8', 'surrogateescape').decode('ISO-8859-1')
     saver.save(sess, CHECK_POINT_DIR + "\\model", global_step=i)
-        
+    
 print('Learning Finished!')
 
 # Test model and check accuracy
