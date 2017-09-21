@@ -13,4 +13,4 @@ Python version we use is 3.6.1
 1. math_mnist_save_after_trainig.py
     - trainning app.
     
-<<scheduled to add contents.....>>
+..........scheduled to add contents.....
