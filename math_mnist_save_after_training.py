@@ -9,18 +9,25 @@
 import tensorflow as tf
 import os
 import time
-
-from math_mnist_cnn import Model
-# import matplotlib.pyplot as plt
-
-tf.set_random_seed(777)  # reproducibility
+import argparse
 
 import math_mnist
+from math_mnist_cnn import Model
+
+# import matplotlib.pyplot as plt
+
+parser = argparse.ArgumentParser()
+parser.add_argument("epochs", 
+                    help="[integer]number of training epochs", 
+                    type=int)
+args = parser.parse_args()
+
+tf.set_random_seed(777)  # reproducibility
 mnist = math_mnist.read_data_sets()
 
 # hyper parameters
 learning_rate = 0.001
-training_epochs = 100
+training_epochs = args.epochs
 batch_size = 100
 
 # image, label parameters

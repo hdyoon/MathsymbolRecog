@@ -78,7 +78,7 @@ class Model:
             conv2 = self.conv_layer(conv1, 32, 64, "conv2", keep_prob=self.keep_prob)
             conv3 = self.conv_layer(conv2, 64, 128, "conv3", keep_prob=self.keep_prob)
             conv4 = self.conv_layer(conv3, 128, 256, "conv4", keep_prob=self.keep_prob)
-#            print(conv5)
+#            print(conv4)
             flattened = tf.reshape(conv4, [-1, 4 * 4 * 256])
             
             fc1 = self.fc_layer(flattened, 4 * 4 * 256, 1024, "fc1", keep_prob=self.keep_prob)
