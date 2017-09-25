@@ -5,6 +5,9 @@
 #    training_epochs 만큼 모델 훈련 후
 #    정해진 directory(CHECK_POINT_DIR)에 현재 모델 상태 저장
 #    마지막에 정확도 테스트 리포팅    
+#    
+#    Usage : math_mnist_save_after_training.py 100
+#    Spyder의 경우 Run > Configuration per file > Command line options 에 정수 추가
 #"""
 import tensorflow as tf
 import os
@@ -23,7 +26,7 @@ parser.add_argument("epochs",
 args = parser.parse_args()
 
 tf.set_random_seed(777)  # reproducibility
-mnist = math_mnist.read_data_sets()
+mnist = math_mnist.read_data_sets() # load math
 
 # hyper parameters
 learning_rate = 0.001
