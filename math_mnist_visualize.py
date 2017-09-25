@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #"""
-##    <프로그램 개요>
+#    <Script Info.>
 ##    Main 클래스
 ##    CNN Model을 생성하여 Application Instance에 전달함.
 ##    checkpoint가 존재 한다면, Session에 CNN Model을 restore함.    

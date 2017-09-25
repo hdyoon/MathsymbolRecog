@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #"""
-#    <프로그램 개요>
+#    <Script Info.>
 #    Train Only
 #    training_epochs 만큼 모델 훈련 후
 #    정해진 directory(CHECK_POINT_DIR)에 현재 모델 상태 저장

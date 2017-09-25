@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #"""
-#    <프로그램 개요>
+#    <Script Info.>
 #    GUI Application 클래스
 #    Instance 생성시 CNN Model Instance 전달 받음.,
 #    50x50 Image 입력 -> 배열 변환 -> 모델 적용(predict함수)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #"""
-#    <프로그램 개요>
+#    <Script Info.>
 #    CNN Modeling 클래스
 #    50x50 이미지 -> 101가지 카테고리
 #    multiple instance를 허용함으로 ensemble 모델 구현 가능

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 22 09:16:21 2017
-
-@author: Nikodemos
-"""
+#"""
+#<Script Info>
+#
+#데이터 분포 보여주기
+#"""
 
 import numpy
 import matplotlib.pyplot as plt
