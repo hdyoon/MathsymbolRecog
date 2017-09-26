@@ -42,7 +42,7 @@ else:
 
 # start the app
 print("[INFO] starting...")
-
+        
 pba = Application(m1)
 pba.root.mainloop()
 

@@ -105,7 +105,11 @@ class Model:
                     tf.argmax(self.logits, 1), tf.argmax(self.y, 1))
             self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
             tf.summary.scalar("accuracy", self.accuracy)
-        
+    
+    @property
+    def get_logits(self):
+        return self.logits
+    
     # Summary for tensorboard
     def merged_all(self):
         self.merged = tf.summary.merge_all()

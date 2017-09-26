@@ -13,6 +13,8 @@ import tensorflow as tf
 import os
 import time
 import argparse
+import embedder
+import numpy
 
 import math_mnist
 from math_mnist_cnn import Model
@@ -26,23 +28,31 @@ parser.add_argument("epochs",
 args = parser.parse_args()
 
 tf.set_random_seed(777)  # reproducibility
-mnist = math_mnist.read_data_sets() # load math
+
+
 
 # hyper parameters
-learning_rate = 0.001
 training_epochs = args.epochs    #a input argument
 batch_size = 100
 
-# image, label parameters
-image_size = 50     # one side pixel size of the square
-image_square = image_size * image_size
-label_size = 101    # number of labels(categories)
+# image, label parameters for embedder
+IMAGE_SIZE = 50     # one side pixel size of the square
+LABEL_SIZE = 101    # number of labels(categories)
+VALIDATION_SIZE = 1024
+NUM_CHANNELS = 1
 
 CHECK_POINT_DIR = TB_SUMMARY_DIR = '.\\tb\\mnist2'
+#SPRITES = os.path.join(TB_SUMMARY_DIR, 'sprite.png')
+#LABELS = os.path.join(TB_SUMMARY_DIR, 'labels.tsv')
+SPRITES = 'sprite.png'
+LABELS = 'labels.tsv'
+
 
 tf.reset_default_graph()
 
 last_epoch = tf.Variable(0, name='last_epoch')
+
+mnist = math_mnist.read_data_sets(validation_size=VALIDATION_SIZE) # load math
 
 # initialize
 sess = tf.Session()
@@ -55,6 +65,28 @@ sess.run(tf.global_variables_initializer())
 writer = tf.summary.FileWriter(TB_SUMMARY_DIR)
 writer.add_graph(sess.graph)
 global_step = 0
+
+# make embedded data for validation
+validation_images = mnist.validation.images
+embedder.make_sprite(mnist.validation.images,50,1,CHECK_POINT_DIR)
+
+# make embedded label for validation
+metadata_file = open(os.path.join(TB_SUMMARY_DIR, 'labels.tsv'), 'w')
+df_labels = math_mnist.read_categories()
+for label in mnist.validation.labels:
+    metadata_file.write('%s\n' % math_mnist.get_category_char(label, df_labels))
+metadata_file.close()
+
+embedding = tf.Variable(tf.zeros([1024, LABEL_SIZE]), name="test_embedding")
+assignment = embedding.assign(m1.get_logits)
+config = tf.contrib.tensorboard.plugins.projector.ProjectorConfig()
+embedding_config = config.embeddings.add()
+embedding_config.tensor_name = embedding.name
+embedding_config.sprite.image_path = SPRITES
+embedding_config.metadata_path = LABELS
+# Specify the width and height of a single thumbnail.
+embedding_config.sprite.single_image_dim.extend([50, 50])
+tf.contrib.tensorboard.plugins.projector.visualize_embeddings(writer, config)
 
 # Saver and Restore
 saver = tf.train.Saver()
@@ -99,6 +131,8 @@ for epoch in range(start_from, training_epochs):
     
     sess.run(last_epoch.assign(epoch + 1))
     
+    activations = sess.run(assignment, feed_dict={m1.x:validation_images, m1.keep_prob: 1.0})
+    
     if not os.path.exists(CHECK_POINT_DIR):
         os.makedirs(CHECK_POINT_DIR)
     
@@ -108,5 +142,19 @@ for epoch in range(start_from, training_epochs):
     
 print('Learning Finished!')
 
-# Test model and check accuracy
-print('Accuracy:', m1.get_accuracy(mnist.test.images, mnist.test.labels))
+
+
+
+#saver.save(sess, CHECK_POINT_DIR + "\\model", global_step=856)
+
+
+#print(activations)
+#print(m1.get_logits)
+#print(mnist.validation.labels)
+# summary embedding
+#embedder.summary_embedding(sess=sess, dataset=mnist.validation.images, embedding_list=[activations],
+#                           embedding_path=TB_SUMMARY_DIR,
+#                           image_size=IMAGE_SIZE, channel=NUM_CHANNELS, labels=mnist.validation.labels)
+
+## Test model and check accuracy
+#print('Accuracy:', m1.get_accuracy(mnist.test.images, mnist.test.labels))
