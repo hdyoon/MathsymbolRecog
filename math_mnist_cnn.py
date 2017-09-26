@@ -36,6 +36,9 @@ class Model:
         
         self._build_net()
         self.merged_all()
+        
+#        embedding = tf.Variable(tf.zeros([1024, embedding_size]), name = "test_embedding")
+#        assignment = embedding.assign(embedding_input)
     
     # Define a simple convolutional layer
     def conv_layer(self, input, size_in, size_out, name="conv", keep_prob=1.0):
@@ -53,7 +56,8 @@ class Model:
     # And a fully connected layer
     def fc_layer(self, input, size_in, size_out, name="fc", keep_prob=1.0):
         with tf.variable_scope(name):
-            w = tf.Variable(tf.random_normal([size_in, size_out], stddev=0.1), name="W")
+            w =  tf.get_variable("W", shape=[size_in, size_out],
+                                 initializer=tf.contrib.layers.xavier_initializer())
             b = tf.Variable(tf.constant(0.1, shape=[size_out]), name="B")
             act = tf.matmul(input, w) + b
             tf.summary.histogram(name, input)
@@ -72,6 +76,7 @@ class Model:
             self.x = tf.placeholder(tf.float32, [None, self.image_square])
             # img 50x50x1 (black/white)
             x_img = tf.reshape(self.x, [-1, self.image_size, self.image_size, 1])
+            tf.summary.image('input', x_img, 3)
             self.y = tf.placeholder(tf.float32, [None, self.label_size])
             
             conv1 = self.conv_layer(x_img, 1, 32, "conv1", keep_prob=self.keep_prob)
@@ -88,7 +93,7 @@ class Model:
             # Compute cross entropy as our loss function
             self.cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
                     logits=self.logits, labels=self.y))
-        tf.summary.scalar("cost", self.cost)
+            tf.summary.scalar("cost", self.cost)
         
         with tf.name_scope("optimizer"):
         # Use an AdamOptimizer to train the network
@@ -99,7 +104,7 @@ class Model:
             correct_prediction = tf.equal(
                     tf.argmax(self.logits, 1), tf.argmax(self.y, 1))
             self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-        tf.summary.scalar("accuracy", self.accuracy)
+            tf.summary.scalar("accuracy", self.accuracy)
         
     # Summary for tensorboard
     def merged_all(self):

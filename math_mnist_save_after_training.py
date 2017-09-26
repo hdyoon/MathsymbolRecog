@@ -7,7 +7,7 @@
 #    마지막에 정확도 테스트 리포팅    
 #    
 #    Usage : math_mnist_save_after_training.py 100
-#    Spyder의 경우 Run > Configuration per file > Command line options 에 정수 추가
+#    Spyder의 경우 Run > Configuration per file > Command line options 에 epochs횟수(정수) 추가
 #"""
 import tensorflow as tf
 import os
@@ -30,7 +30,7 @@ mnist = math_mnist.read_data_sets() # load math
 
 # hyper parameters
 learning_rate = 0.001
-training_epochs = args.epochs
+training_epochs = args.epochs    #a input argument
 batch_size = 100
 
 # image, label parameters
