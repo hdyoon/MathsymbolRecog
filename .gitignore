@@ -12,3 +12,4 @@ tb/mnist3/checkpoint
 *.NIKODEMOSPC
 *.pyc
 tb/mnist2/checkpoint
+*.tempstate1952627502508424310
