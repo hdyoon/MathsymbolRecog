@@ -16,5 +16,4 @@ tb/mnist2/checkpoint
 *.png
 *.tsv
 tb/mnist2/labels.tsv
-*.pbtxt
 test02.py
