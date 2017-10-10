@@ -70,7 +70,6 @@ def make_sprite(dataset, image_size, channel, output_path):
     sprite = images_to_sprite(images)
     scipy.misc.imsave(os.path.join(output_path, 'sprite.png'), sprite)
 
-
 def make_metadata(labels, output_path):
     labels = np.array(labels).flatten()
     metadata_file = open(os.path.join(output_path, 'labels.tsv'), 'w')
@@ -78,7 +77,6 @@ def make_metadata(labels, output_path):
     for i in range(len(labels)):
         metadata_file.write('%06d\t%d\n' % (i, labels[i]))
     metadata_file.close()
-
 
 #def make_embed_tensor(sess, embed_vectors, embed_idx):
 #    if len(embed_vectors.shape) != 2:

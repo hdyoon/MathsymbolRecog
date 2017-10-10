@@ -13,3 +13,8 @@ tb/mnist3/checkpoint
 *.pyc
 tb/mnist2/checkpoint
 *.tempstate1952627502508424310
+*.png
+*.tsv
+tb/mnist2/labels.tsv
+*.pbtxt
+test02.py

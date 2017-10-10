@@ -33,6 +33,8 @@ class Application:
         self.arrange()
         self.model = model
         
+        self.cgs = math_mnist.get_categories()
+        
     def arrange(self):
         
         self.root = tk.Tk()  # initialize root window
@@ -62,10 +64,15 @@ class Application:
     
     def take_snapshot(self):
         x_data = numpy.array(self.memory_image).reshape(1,2500)
-        hot_x_data = numpy.argmax(self.model.predict(x_data))
         
-        df_labels = math_mnist.read_categories()
-        predict_symbol = math_mnist.get_category_char(hot_x_data, df_labels, one_hot=False)
+        x_label = math_mnist.one_hot_to_dense(self.model.predict(x_data))
+        predict_symbol = self.cgs[x_label]
+#        hot_x_data = numpy.argmax(self.model.predict(x_data))
+        
+#        cgs = math_mnist.get_categories()
+#        predict_symbol = math_mnist.get_category_char(hot_x_data, df_labels, one_hot=False)
+        
+        
         
         self.result_label['text'] = predict_symbol
         print(self.model.predict(x_data))

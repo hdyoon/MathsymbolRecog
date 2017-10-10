@@ -68,12 +68,13 @@ def main():
     embedder.make_sprite(mnist.validation.images,
                          IMAGE_SIZE,NUM_CHANNELS,CHECK_POINT_DIR)
     
+    validation_labels = math_mnist.one_hot_to_dense(mnist.validation.labels)
+    
     # make embedded label for validation
-    metadata_file = open(os.path.join(TB_SUMMARY_DIR, LABELS), 'w')
-    df_labels = math_mnist.read_categories()
-    for label in mnist.validation.labels:
-        metadata_file.write('%s\n' % math_mnist.get_category_char(label, df_labels))
-    metadata_file.close()
+    cgs = math_mnist.get_categories()
+    with open(os.path.join(TB_SUMMARY_DIR, LABELS), 'w') as metadata_file:
+        for label in validation_labels:
+            metadata_file.write('%s\n' % cgs[label])
     
     embedding = tf.Variable(tf.zeros([VALIDATION_SIZE, LABEL_SIZE]), name="test_embedding")
     assignment = embedding.assign(m1.get_logits)
@@ -143,18 +144,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-#saver.save(sess, CHECK_POINT_DIR + "\\model", global_step=856)
-
-
-#print(activations)
-#print(m1.get_logits)
-#print(mnist.validation.labels)
-# summary embedding
-#embedder.summary_embedding(sess=sess, dataset=mnist.validation.images, embedding_list=[activations],
-#                           embedding_path=TB_SUMMARY_DIR,
-#                           image_size=IMAGE_SIZE, channel=NUM_CHANNELS, labels=mnist.validation.labels)
-
-## Test model and check accuracy
-#print('Accuracy:', m1.get_accuracy(mnist.test.images, mnist.test.labels))

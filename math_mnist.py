@@ -21,8 +21,10 @@
 import numpy
 import os
 import _pickle as pickle
-import pandas as pd
+import csv
 from six.moves import xrange  # pylint: disable=redefined-builtin
+
+#sklearn.preprocessing.OneHotEncoder
 
 from tensorflow.contrib.learn.python.learn.datasets import base
 from tensorflow.python.framework import dtypes
@@ -32,7 +34,7 @@ from tensorflow.python.framework import dtypes
 
 image_pixels_size = 50
 num_of_categories = 101
-
+categories_file_name = 'categories.txt'
 
 class DataSet(object):
 
@@ -40,7 +42,7 @@ class DataSet(object):
                  images,
                  labels,
                  fake_data=False,
-                 one_hot=False,
+                 one_hot=True,
                  dtype=dtypes.float32):
         """Construct a DataSet.
         one_hot arg is used only if fake_data is true.  `dtype` can be either
@@ -121,28 +123,39 @@ class DataSet(object):
         end = self._index_in_epoch
         return self._images[start:end], self._labels[start:end]
 
-def get_label1hot(char_label, df):
-    return numpy.asarray(df[char_label].tolist())
+def get_categories():
+    i = 0
+    cgs = []
+    reader = csv.reader(open(categories_file_name), delimiter=' ')
+    for row in reader:
+        for s in row:
+            cgs.append(s)
+            i += 1
+    assert len(cgs) == len(list(set(cgs))), "There is duplicate category value exist."
+    return numpy.array(cgs)
 
-def get_category_char(np_index, df, one_hot=True):
-    if one_hot:
-        np_index = numpy.argmax(np_index)
-    return df.columns[np_index]
-#    return numpy.asarray(df[char_label].tolist())
-        
-def read_categories():
-    categories_file_name = 'categories.txt'
-    with open(categories_file_name) as f:
-        for l in f:
-            s = pd.Series(l.strip().split(" "))
-    return pd.get_dummies(s)
+def dense_to_one_hot(labels_dense, num_classes):
+    """Convert class labels from scalars to one-hot vectors."""
+    num_labels = labels_dense.shape[0]
+    index_offset = numpy.arange(num_labels) * num_classes
+    labels_one_hot = numpy.zeros((num_labels, num_classes))
+    labels_one_hot.flat[index_offset + labels_dense.ravel()] = 1
+    return labels_one_hot
 
-def extract_datas(f, df):
+def one_hot_to_dense(labels_one_hot):
+    assert labels_one_hot.ndim==2, "numpy array must be 2-D array."
+    labels_dense = numpy.argmax(labels_one_hot,axis=1)
+    return labels_dense
+
+def extract_datas(f, labels_one_hot=True):
     data_list = pickle.load(f)
     images_array = numpy.asarray(list(map(lambda x: x['pattern'].reshape((image_pixels_size**2)), data_list)))
-    labels_array = numpy.asarray(list(map(lambda x: get_label1hot(x['label'],df).reshape((num_of_categories)), data_list)))
+    categories = get_categories()
+    labels_array = numpy.asarray(list(map(lambda x: numpy.where(x['label']==categories), data_list))).flatten()
+    if labels_one_hot==True:
+        labels_array = dense_to_one_hot(labels_array,101)
     return images_array, labels_array
-        
+
 def read_data_sets(outputs_rel_path='outputs',
                    fake_data=False,
                    one_hot=True,
@@ -157,18 +170,16 @@ def read_data_sets(outputs_rel_path='outputs',
         test = fake()
         return base.Datasets(train=train, validation=validation, test=test)
     
-    df_labels = read_categories()
-    
     train_dir = os.path.join(outputs_rel_path, 'train')
     test_dir = os.path.join(outputs_rel_path, 'test')
 #    validation_dir = os.path.join(outputs_rel_path, 'validation')
     'Load pickled data'
     with open(os.path.join(train_dir, 'train.pickle'), 'rb') as train_f:
         print('Restoring training set ...')
-        train_images,train_labels=extract_datas(train_f,df_labels)
+        train_images,train_labels=extract_datas(train_f,labels_one_hot=one_hot)
     with open(os.path.join(test_dir, 'test.pickle'), 'rb') as test_f:
         print('Restoring test set ...')
-        test_images,test_labels=extract_datas(test_f,df_labels)
+        test_images,test_labels=extract_datas(test_f,labels_one_hot=one_hot)
 
     if not 0 <= validation_size <= len(train_images):
         raise ValueError(
@@ -185,34 +196,13 @@ def read_data_sets(outputs_rel_path='outputs',
     validation = DataSet(validation_images, validation_labels)
     return  base.Datasets(train=train, validation=validation, test=test)
 
-
-#if __name__ == "__main__":
-#    mnist = read_data_sets()
-#    df_labels = read_categories()
-#    
-#    print(get_category_char(5,df_labels,one_hot=False))
-#    def get_category_char(np_index, df, one_hot=True):
-#    if one_hot:
-#        np_index = numpy.argmax(np_index)
-#    return df.columns[np_index]
-##    check the train dataset
-#    r = random.randint(0, mnist.train.num_examples - 1)
-#    plt.imshow(mnist.train.images[r:r + 1].reshape(28, 28), cmap='Greys', interpolation='nearest')
-#    plt.show()
-#    print(mnist.train.labels[r:r + 1])
-#    print(get_category_char(mnist.train.labels[r:r + 1],df_labels))
-
-##    check the test dataset
-#    r = random.randint(0, mnist.test.num_examples - 1)
-#    plt.imshow(mnist.test.images[r:r + 1].reshape(28, 28), cmap='Greys', interpolation='nearest')
-#    plt.show()
-#    print(mnist.test.labels[r:r + 1])
-#    print(get_category_char(mnist.test.labels[r:r + 1],df_labels))
+if __name__ == "__main__":
     
-##    check the validation dataset
-#    r = random.randint(0, mnist.validation.num_examples - 1)
-#    plt.imshow(mnist.validation.images[r:r + 1].reshape(28, 28), cmap='Greys', interpolation='nearest')
-#    plt.show()
-#    print(mnist.validation.labels[r:r + 1])
-#    print(get_category_char(mnist.validation.labels[r:r + 1],df_labels))
+    cgs = get_categories()
+    print(cgs)
+    mnist = read_data_sets()
+    batch_images, batch_labels = mnist.validation.next_batch(100)
+    print(batch_images)
+    print(batch_labels)
+    print(one_hot_to_dense(batch_labels))
     

@@ -37,9 +37,6 @@ class Model:
         self._build_net()
         self.merged_all()
         
-#        embedding = tf.Variable(tf.zeros([1024, embedding_size]), name = "test_embedding")
-#        assignment = embedding.assign(embedding_input)
-    
     # Define a simple convolutional layer
     def conv_layer(self, input, size_in, size_out, name="conv", keep_prob=1.0):
         with tf.variable_scope(name):
@@ -48,6 +45,7 @@ class Model:
             act = tf.nn.relu(conv)
             tf.summary.histogram(name, input)
             tf.summary.histogram("weights", w)
+            tf.summary.histogram("activations", act)
             pool = tf.nn.max_pool(act, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding="SAME")
             dout = tf.nn.dropout(pool, keep_prob=keep_prob)
             return dout
@@ -63,6 +61,7 @@ class Model:
             tf.summary.histogram(name, input)
             tf.summary.histogram("weights", w)
             tf.summary.histogram("biases", b)
+            tf.summary.histogram("activations", act)
             dout = tf.nn.dropout(act, keep_prob=keep_prob)
             return dout
         
@@ -95,7 +94,7 @@ class Model:
                     logits=self.logits, labels=self.y))
             tf.summary.scalar("cost", self.cost)
         
-        with tf.name_scope("optimizer"):
+        with tf.name_scope("train"):
         # Use an AdamOptimizer to train the network
             self.optimizer = tf.train.AdamOptimizer(
                     learning_rate=self.learning_rate).minimize(self.cost)
