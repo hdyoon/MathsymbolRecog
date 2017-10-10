@@ -135,8 +135,8 @@ def main():
         
             if not os.path.exists(CHECK_POINT_DIR):
                 os.makedirs(CHECK_POINT_DIR)
-#            #Fix Unicode Error
-#            CHECK_POINT_DIR = CHECK_POINT_DIR.encode('utf-8', 'surrogateescape').decode('ISO-8859-1')
+    #            #Fix Unicode Error
+    #            CHECK_POINT_DIR = CHECK_POINT_DIR.encode('utf-8', 'surrogateescape').decode('ISO-8859-1')
             print("Saving network...")
             saver.save(sess, CHECK_POINT_DIR + "\\model", global_step=i)
         
