@@ -23,3 +23,4 @@ test02.py
 *.png
 *.tsv
 tb/mnist2/projector_config.pbtxt
+tb/mnist2/model-846.data-00000-of-00001.tempstate14308145365734719274

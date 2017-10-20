@@ -129,16 +129,17 @@ def main():
         
         sess.run(last_epoch.assign(epoch + 1))
         
-        if epoch % 5 == 0:
+        if epoch % 10 == 0:
+            sess.run(assignment, feed_dict={m1.x:validation_images, m1.keep_prob: 1.0})    
             
-            sess.run(assignment, feed_dict={m1.x:validation_images, m1.keep_prob: 1.0})
-        
             if not os.path.exists(CHECK_POINT_DIR):
                 os.makedirs(CHECK_POINT_DIR)
     #            #Fix Unicode Error
     #            CHECK_POINT_DIR = CHECK_POINT_DIR.encode('utf-8', 'surrogateescape').decode('ISO-8859-1')
             print("Saving network...")
             saver.save(sess, CHECK_POINT_DIR + "\\model", global_step=i)
+        
+        
         
     print('Learning Finished!')
 
